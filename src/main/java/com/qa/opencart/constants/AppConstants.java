@@ -12,7 +12,9 @@ public class AppConstants {
 	public final static int MEDIUM_TIMEOUT = 15; 
 	public final static int MAX_TIMEOUT = 20;
 	
-	public final static String CONFIG_PROP_FILE = "./src/test/resources/config/config.properties";
-
-
+	public final static String QA_CONFIG_PROP_FILE = "./src/test/resources/config/qa.config.properties";
+	public final static String DEV_CONFIG_PROP_FILE = "./src/test/resources/config/dev.config.properties";
+	public final static String STAGE_CONFIG_PROP_FILE = "./src/test/resources/config/stage.config.properties";
+	public final static String PROD_CONFIG_PROP_FILE = "./src/test/resources/config/prod.config.properties";
+	public final static String UAT_CONFIG_PROP_FILE = "./src/test/resources/config/uat.config.properties";
 }

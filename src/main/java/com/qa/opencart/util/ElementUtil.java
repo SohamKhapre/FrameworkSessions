@@ -2,10 +2,11 @@ package com.qa.opencart.util;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
@@ -24,6 +25,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.qa.opencart.factory.DriverFactory;
 
+import io.qameta.allure.Step;
+
 /**
  * 
  * @author naveenautomationlabs
@@ -33,6 +36,8 @@ public class ElementUtil {
 
 	private WebDriver driver;
 	private JavaScriptUtil jsUtil;
+	
+	private static final Logger log = LogManager.getLogger(ElementUtil.class);
 
 	public ElementUtil(WebDriver driver) {
 		this.driver = driver;
@@ -45,12 +50,14 @@ public class ElementUtil {
 		}
 	}
 	
-//	private void highlightElement(WebElement element) {
-//		if(Boolean.parseBoolean(DriverFactory.highlight)) {
-//			jsUtil.flash(element);
-//		}
-//	}
+	@Step("Highlighting the webelement")
+	private void highlightElement(WebElement element) {
+		if(Boolean.parseBoolean(DriverFactory.highlight)) {
+			jsUtil.flash(element);
+		}
+	}
 
+	@Step("Cliking on the webelement {0}")
 	public void doClick(By locator) {
 		getElement(locator).click();
 	}
@@ -59,6 +66,7 @@ public class ElementUtil {
 		getElement(getLocator(locatorType, locatorValue)).click();
 	}
 
+	@Step("Enter the value {1} in the webelement {0}")
 	public void doSendKeys(By locator, CharSequence... value) {
 		nullCheck(value);
 		WebElement element = getElement(locator);
@@ -66,6 +74,7 @@ public class ElementUtil {
 		element.sendKeys(value);
 	}
 
+	@Step("Enter the value {1} in the webelement {0}")
 	public void doSendKeys(WebElement element, CharSequence... value) {
 		nullCheck(value);
 		element.clear();
@@ -97,11 +106,13 @@ public class ElementUtil {
 		return getElement(locator).getDomProperty(propName);
 	}
 
+	@Step("Trying to check if the webelement {0} is displayed on the web page")
 	public boolean doIsElementDisplayed(By locator) {
 		try {
 			return getElement(locator).isDisplayed();
 		} catch (NoSuchElementException e) {
-			System.out.println("element is not displayed");
+			//System.out.println("element is not displayed");
+			log.error("element is not displayed");
 			return false;
 		}
 	}
@@ -112,27 +123,32 @@ public class ElementUtil {
 
 	public boolean isElementDisplayed(By locator) {
 		if (getElements(locator).size() == 1) {
-			System.out.println("element is available on the page one time");
+			//System.out.println("element is available on the page one time");
+			log.info("element is available on the page one time");
 			return true;
 		} else {
-			System.out.println("element is not available on the page");
+			//System.out.println("element is not available on the page");
+			log.error("element is not available on the page");
 			return false;
 		}
 	}
 
 	public boolean isElementDisplayed(By locator, int elementCount) {
 		if (getElements(locator).size() == elementCount) {
-			System.out.println("element is available on the page " + elementCount + " times");
+			//System.out.println("element is available on the page " + elementCount + " times");
+			log.info("element is available on the page " + elementCount + " times");
 			return true;
 		} else {
-			System.out.println("element is not available on the page");
+			//System.out.println("element is not available on the page");
+			log.error("element is not available on the page");
 			return false;
 		}
 	}
 
+	@Step("Fetching the webelement {0}")
 	public WebElement getElement(By locator) {
 		WebElement element = driver.findElement(locator);
-		//highlightElement(element);
+		highlightElement(element);
 		return element;
 	}
 
@@ -167,7 +183,8 @@ public class ElementUtil {
 			break;
 
 		default:
-			System.out.println("invalid locator, please use the right locator...");
+			//System.out.println("invalid locator, please use the right locator...");
+			log.error("invalid locator, please use the right locator...");
 			break;
 		}
 
@@ -202,14 +219,16 @@ public class ElementUtil {
 		List<WebElement> optionsList = select.getOptions();
 		for (WebElement e : optionsList) {
 			String text = e.getText();
-			System.out.println(text);
+			//System.out.println(text);
+			log.info(text);
 		}
 	}
 
 	public List<String> getDropDownOptionsTextList(By locator) {
 		Select select = new Select(getElement(locator));
 		List<WebElement> optionsList = select.getOptions();
-		System.out.println("options size: " + optionsList.size());
+		//System.out.println("options size: " + optionsList.size());
+		log.info("options size: " + optionsList.size());
 
 		List<String> optionsValueList = new ArrayList<String>();// []
 		for (WebElement e : optionsList) {
@@ -222,7 +241,8 @@ public class ElementUtil {
 	public int getDropDownOptionsCount(By locator) {
 		Select select = new Select(getElement(locator));
 		List<WebElement> countryOptionsList = select.getOptions();
-		System.out.println("options size: " + countryOptionsList.size());
+		//System.out.println("options size: " + countryOptionsList.size());
+		log.info("options size: " + countryOptionsList.size());
 		return countryOptionsList.size();
 	}
 
@@ -233,7 +253,8 @@ public class ElementUtil {
 
 		for (WebElement e : optionsList) {
 			String text = e.getText();
-			System.out.println(text);
+			//System.out.println(text);
+			log.info(text);
 			if (text.contains(value)) {
 				e.click();
 				flag = true;
@@ -242,9 +263,11 @@ public class ElementUtil {
 		}
 
 		if (flag) {
-			System.out.println(value + " is available and selected");
+			//System.out.println(value + " is available and selected");
+			log.info(value + " is available and selected");
 		} else {
-			System.out.println(value + " is not available");
+			//System.out.println(value + " is not available");
+			log.info(value + " is not available");
 		}
 	}
 
@@ -263,12 +286,14 @@ public class ElementUtil {
 		Thread.sleep(2000);
 
 		List<WebElement> suggList = getElements(suggestions);
-		System.out.println(suggList.size());
+		//System.out.println(suggList.size());
+		log.info(suggList.size());
 		boolean flag = false;
 
 		for (WebElement e : suggList) {
 			String text = e.getText();
-			System.out.println(text);
+			//System.out.println(text);
+			log.info(text);
 			if (text.contains(actualValue)) {
 				e.click();
 				flag = true;
@@ -276,9 +301,11 @@ public class ElementUtil {
 			}
 		}
 		if (flag) {
-			System.out.println(actualValue + " is available and clicked");
+			//System.out.println(actualValue + " is available and clicked");
+			log.info(actualValue + " is available and clicked");
 		} else {
-			System.out.println(actualValue + " is not available");
+			//System.out.println(actualValue + " is not available");
+			log.error(actualValue + " is not available");
 		}
 
 	}
@@ -298,7 +325,8 @@ public class ElementUtil {
 		Thread.sleep(3000);
 		List<WebElement> choicesList = getElements(choices);
 
-		System.out.println(choicesList.size());
+		//System.out.println(choicesList.size());
+		log.info(choicesList.size());
 
 		if (choiceValue[0].equalsIgnoreCase("all")) {
 			// select all the choice one by one:
@@ -310,7 +338,8 @@ public class ElementUtil {
 		else {
 			for (WebElement e : choicesList) {
 				String text = e.getText();
-				System.out.println(text);
+				//System.out.println(text);
+				log.info(text);
 
 				for (String ch : choiceValue) {
 					if (text.equals(ch)) {
@@ -376,14 +405,14 @@ public class ElementUtil {
 	public WebElement waitForElementPresence(By locator, long timeOut) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut));
 		WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-		//highlightElement(element);
+		highlightElement(element);
 		return element;
 	}
 
 	public WebElement waitForElementPresence(By locator, long timeOut, long pollingTime) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut), Duration.ofSeconds(pollingTime));
 		WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-		//highlightElement(element);
+		highlightElement(element);
 		return element;
 	}
 
@@ -396,18 +425,20 @@ public class ElementUtil {
 	 * @param timeOut
 	 * @return
 	 */
+	@Step("Waiting for webelement {0} within the timeout {1}")
 	public WebElement waitForElementVisible(By locator, long timeOut) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut));
 		WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-		//highlightElement(element);
+		highlightElement(element);
 		return element;
 
 	}
 
+	@Step("Waiting for webelement {0} for every {3} secs within the total timeout {1}")
 	public WebElement waitForElementVisible(By locator, long timeOut, long pollingTime) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut), Duration.ofSeconds(pollingTime));
 		WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-		//highlightElement(element);
+		highlightElement(element);
 		return element;
 
 	}
@@ -419,6 +450,7 @@ public class ElementUtil {
 	 * @param locator
 	 * @param timeOut
 	 */
+	@Step("Waiting for clicking on the webelement {0} once it is available within the timeout {1}")
 	public void clickElementWhenReady(By locator, long timeOut) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut));
 		wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
@@ -450,6 +482,7 @@ public class ElementUtil {
 	 * @param timeOut
 	 * @return
 	 */
+	@Step("Waiting for the list of web elements {0} within the timeout {1}")
 	public List<WebElement> waitForElementsVisible(By locator, long timeOut) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut));
 		try {
@@ -487,7 +520,8 @@ public class ElementUtil {
 				return driver.getTitle();
 			}
 		} catch (TimeoutException e) {
-			System.out.println("title is not found after " + timeOut + " seconds");
+			//System.out.println("title is not found after " + timeOut + " seconds");
+			log.error("title is not found after " + timeOut + " seconds");
 		}
 
 		return null;
@@ -501,6 +535,7 @@ public class ElementUtil {
 	 * @param timeOut
 	 * @return
 	 */
+	@Step("Waiting for the title: {0} within the timeout {1}")
 	public String waitForTitleIs(String title, long timeOut) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut));
 
@@ -509,13 +544,15 @@ public class ElementUtil {
 				return driver.getTitle();
 			}
 		} catch (TimeoutException e) {
-			System.out.println("title is not found after " + timeOut + " seconds");
+			//System.out.println("title is not found after " + timeOut + " seconds");
+			log.error("title is not found after " + timeOut + " seconds");
 		}
 
 		return null;
 
 	}
 
+	@Step("Waiting for the URL {0} within the timeout {1}")
 	public String waitForURLContains(String fractionURL, long timeOut) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut));
 
@@ -524,7 +561,8 @@ public class ElementUtil {
 				return driver.getCurrentUrl();
 			}
 		} catch (TimeoutException e) {
-			System.out.println("URL is not found after " + timeOut + " seconds");
+			//System.out.println("URL is not found after " + timeOut + " seconds");
+			log.error("URL is not found after " + timeOut + " seconds");
 		}
 
 		return null;
@@ -538,7 +576,8 @@ public class ElementUtil {
 				return driver.getCurrentUrl();
 			}
 		} catch (TimeoutException e) {
-			System.out.println("URL is not found after " + timeOut + " seconds");
+			//System.out.println("URL is not found after " + timeOut + " seconds");
+			log.error("URL is not found after " + timeOut + " seconds");
 		}
 
 		return null;
@@ -613,7 +652,8 @@ public class ElementUtil {
 		try {
 			return wait.until(ExpectedConditions.numberOfWindowsToBe(numberOfWindows));
 		} catch (TimeoutException e) {
-			System.out.println("number of windows are not matched...");
+			//System.out.println("number of windows are not matched...");
+			log.error("number of windows are not matched...");
 			return false;
 		}
 	}

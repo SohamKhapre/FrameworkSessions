@@ -10,6 +10,18 @@ import org.testng.asserts.SoftAssert;
 
 import com.qa.opencart.basetest.BaseTest;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Owner;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+
+
+@Epic("Epic003: Desgin the product info page for open cart application")
+@Story("User Story003: Design the product info page features")
+@Owner("Soham Khapre")
+
 public class ProductInfoPageTest extends BaseTest {
 	
 	@BeforeClass
@@ -28,6 +40,8 @@ public class ProductInfoPageTest extends BaseTest {
 		};
 	}
 	
+	@Description("Verify that correct header is displayed for the searched product {1}")
+	@Severity(SeverityLevel.CRITICAL)
 	@Test (dataProvider = "testDataForHeadersTest")
 	public void getProductHeaderTest(String searchKey, String selectProductName) {
 		searchResult = homePage.searchForProductOnHomePage(searchKey);
@@ -47,7 +61,9 @@ public class ProductInfoPageTest extends BaseTest {
 		};
 	}
 	
+	@Description("Verify that expected product iamge count {1} is displayed for the product {2}")
 	@Test (dataProvider = "testDataForImageCountTest")
+	@Severity(SeverityLevel.BLOCKER)
 	public void getProductImageCountTest(String searchKey, String selectProductName, int expectedImageCount) {
 		searchResult = homePage.searchForProductOnHomePage(searchKey);
 		productInfo = searchResult.selectProduct(selectProductName);
@@ -55,6 +71,8 @@ public class ProductInfoPageTest extends BaseTest {
 		Assert.assertEquals(actualImageCount, expectedImageCount);
 	}
 	
+	@Description("Verify that correct product meta data and price details are displayed")
+	@Severity(SeverityLevel.BLOCKER)
 	@Test
 	public void getFullProductDetailsTest() {
 		searchResult = homePage.searchForProductOnHomePage("macbook");
@@ -77,4 +95,27 @@ public class ProductInfoPageTest extends BaseTest {
 		softAssert.assertAll();
 	}
  
+	@Description("Verify that correct product cart details details are displayed")
+	@Severity(SeverityLevel.BLOCKER)
+	@Test
+	public void productAddToCartTest() {
+		searchResult = homePage.searchForProductOnHomePage("MacBook Air");
+		productInfo = searchResult.selectProduct("MacBook Air");
+		shoppingCart = productInfo.productAddToCart("MacBook Air", "2");
+		Map<String, String> productCartDetails = shoppingCart.shoppingCartFullProductDetails("2");
+		productCartDetails.forEach((k,v) -> System.out.println(k + ":" + v));
+		
+		SoftAssert softAssert = new SoftAssert();
+		
+		softAssert.assertTrue(productCartDetails.get("Product Name").contains("MacBook Air"));
+		//softAssert.assertEquals(productCartDetails.get("Product Name"), "MacBook Air");
+		softAssert.assertEquals(productCartDetails.get("Total"), "$2,404.00");
+		softAssert.assertEquals(productCartDetails.get("Model"), "Product 17");
+		softAssert.assertEquals(productCartDetails.get("VAT (20%)"), "$400.00");
+		softAssert.assertEquals(productCartDetails.get("Eco Tax (-2.00)"), "$4.00");
+		softAssert.assertEquals(productCartDetails.get("Unit Price"), "$1,202.00");
+		softAssert.assertEquals(productCartDetails.get("Sub-Total"), "$2,000.00");
+		
+		softAssert.assertAll();
+	}
 }
