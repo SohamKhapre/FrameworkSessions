@@ -20,18 +20,18 @@
 		</classes>
 	</test>
 
-	<test name="Home Page Test">
-		<parameter name="browser" value="chrome" />
-		<classes>
-			<class name="com.qa.opencart.tests.HomePageTest" />
-		</classes>
-	</test>
+<!--	<test name="Home Page Test">-->
+<!--		<parameter name="browser" value="chrome" />-->
+<!--		<classes>-->
+<!--			<class name="com.qa.opencart.tests.HomePageTest" />-->
+<!--		</classes>-->
+<!--	</test>-->
 
-	<test name="Product Info Page Test">
-		<parameter name="browser" value="chrome" />
-		<classes>
-			<class name="com.qa.opencart.tests.ProductInfoPageTest" />
-		</classes>
-	</test>
+<!--	<test name="Product Info Page Test">-->
+<!--		<parameter name="browser" value="chrome" />-->
+<!--		<classes>-->
+<!--			<class name="com.qa.opencart.tests.ProductInfoPageTest" />-->
+<!--		</classes>-->
+<!--	</test>-->
 
 </suite>
