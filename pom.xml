@@ -127,8 +127,8 @@
 					<forkCount>3</forkCount>
 					<reuseForks>true</reuseForks>
 					<suiteXmlFiles>
-						<suiteXmlFile>src/test/resources/testrunner/chromeBrowser.xml</suiteXmlFile> 
-<!--						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>-->
+<!--						<suiteXmlFile>src/test/resources/testrunner/chromeBrowser.xml</suiteXmlFile>-->
+						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
 					</suiteXmlFiles>
 
 					<argLine>
